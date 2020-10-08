@@ -9,7 +9,7 @@
 
 NAMESPACE_BEGIN
 
-template<typename T, int ROWS, int COLUMN>
+template<typename T, int ROWS, int COLUMNS>
 class Matrix : public MathAligned<MEM_ALIGN>
 {
 	static_assert(std::numeric_limits<T>::is_integer || std::is_floating_point<T>::value, "Matrix can be only instantiated with integer, float or double");
