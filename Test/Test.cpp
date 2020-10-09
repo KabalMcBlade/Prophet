@@ -10,6 +10,8 @@ USING_PROPHET
 int main()
 {
 	//Matrix<std::string> a;	// static assert works
+	Matrix<float, 1, 0> testA;
+	Matrix<float, 2, 3> testB;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
