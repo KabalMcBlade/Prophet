@@ -12,6 +12,10 @@ int main()
 	//Matrix<std::string> a;	// static assert works
 	Matrix<float, 1, 0> testA;
 	Matrix<float, 2, 3> testB;
+	Matrix<float, 2, 5> testC;
+	Matrix<float, 6, 3> testD;
+	Matrix<float, 3, 7> testE;
+	Matrix<float, 5, 7> testF;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

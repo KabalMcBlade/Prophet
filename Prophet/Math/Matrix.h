@@ -12,7 +12,7 @@ NAMESPACE_BEGIN
 template<typename T, uint32 ROWS, uint32 COLUMNS>
 class Matrix : public MathAligned<MEM_ALIGN>
 {
-	static_assert(ROWS > 0, "Matrix rows must be greater than 0");
+	static_assert(ROWS > 0 && COLUMNS > 0, "Matrix 2D rows and column must be greater than 0");
 	static_assert(std::numeric_limits<T>::is_integer || std::is_floating_point<T>::value, "Matrix can be only instantiated with integer, float or double");
 
 public:
@@ -23,6 +23,7 @@ public:
 
 	INLINE void SetRandomUniformDistribution()
 	{
+
 #if ARCH & ARCH_AVX512_FLAG
 		// 512
 #elif (ARCH & ARCH_AVX_FLAG)
@@ -32,8 +33,8 @@ public:
 #endif
 	}
 
-	INLINE uint32 GetRowsCount() const { return ROWS; };
-	INLINE uint32 GetColumnsCount() const { return COLUMNS; };
+	INLINE constexpr uint32 GetRowsCount() const { return ROWS; };
+	INLINE constexpr uint32 GetColumnsCount() const { return COLUMNS; };
 
 private:
 	using Type = typename std::conditional<std::is_same<int, T>::value, __int,
@@ -42,17 +43,15 @@ private:
 		>::type
 	>::type;
 
-	//Type m_buffer[Ceil(ROWS / SCALAR_COUNT) % SCALAR_COUNT][Ceil(COLUMNS / SCALAR_COUNT) % SCALAR_COUNT];
-	Type m_buffer[ROWS][COLUMNS];
+	Type m_buffer[((ROWS / SCALAR_COUNT) % SCALAR_COUNT) + 1][((COLUMNS / SCALAR_COUNT) % SCALAR_COUNT) + 1];
 	//ALIGNED T m_buffer[ROWS][COLUMNS];
 };
-
 
 
 template<typename T, uint32 ROWS>
 class Matrix<T, ROWS, 0> : public MathAligned<MEM_ALIGN>
 {
-	static_assert(ROWS > 0, "Matrix rows must be greater than 0");
+	static_assert(ROWS > 0, "Matrix 1D rows must be greater than 0");
 	static_assert(std::numeric_limits<T>::is_integer || std::is_floating_point<T>::value, "Matrix can be only instantiated with integer, float or double");
 
 public:
@@ -72,8 +71,8 @@ public:
 #endif
 	}
 
-	INLINE uint32 GetRowsCount() const { return ROWS; };
-	INLINE uint32 GetColumnsCount() const { return 0; };
+	INLINE constexpr uint32 GetRowsCount() const { return ROWS; };
+	INLINE constexpr uint32 GetColumnsCount() const { return 0; };
 
 private:
 	using Type = typename std::conditional<std::is_same<int, T>::value, __int,
@@ -82,8 +81,8 @@ private:
 		>::type
 	>::type;
 
-	//Type m_buffer[Ceil(ROWS / SCALAR_COUNT) % SCALAR_COUNT][Ceil(COLUMNS / SCALAR_COUNT) % SCALAR_COUNT];
-	Type m_buffer[ROWS];
+	Type m_buffer[((ROWS / SCALAR_COUNT) % SCALAR_COUNT) + 1];
+	//ALIGNED T m_buffer[ROWS];
 };
 
 
