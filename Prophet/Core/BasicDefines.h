@@ -32,15 +32,6 @@
 // tells the compiler to never inline a particular function
 #define NO_INLINE  __declspec(noinline)
 
-/*
-// default alignment
-#ifdef x64
-#define MEMORY_ALIGNMENT_SIZE	16
-#else
-#define MEMORY_ALIGNMENT_SIZE	8
-#endif
-*/
-
 // Memory alignment
 #define MEMORY_ALIGN(x)		__declspec(align(x))
 #define ALIGN(x)			MEMORY_ALIGN(x)

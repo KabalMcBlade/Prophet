@@ -4,8 +4,10 @@
 #include "Core/BasicTypes.h"
 #include "Core/BasicDefines.h"
 #include "Core/Assertions.h"
-#include "Core/Conversion.h"
 #include "Core/Constants.h"
 #include "Core/Alignment.h"
+#include "Core/SimdHelper.h"
 
 #include "Math/Matrix.h"
+#include "Math/Vector.h"
+#include "Math/LinearAlgebra.h"

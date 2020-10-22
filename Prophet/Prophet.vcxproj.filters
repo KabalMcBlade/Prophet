@@ -30,9 +30,6 @@
     <ClInclude Include="Core\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Conversion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\BasicDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -43,6 +40,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Prophet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\SimdHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\LinearAlgebra.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,12 +10,43 @@ USING_PROPHET
 int main()
 {
 	//Matrix<std::string> a;	// static assert works
-	Matrix<float, 1, 0> testA;
+	Matrix<float, 2, 0> testA;
 	Matrix<float, 2, 3> testB;
 	Matrix<float, 2, 5> testC;
 	Matrix<float, 6, 3> testD;
 	Matrix<float, 3, 7> testE;
-	Matrix<float, 5, 7> testF;
+	Matrix<float, 5, 10> testF;
+	Vector<float, 7> testVecA;
+	testVecA.SetRandomUniformDistribution();
+	//testVecA.Print();
+
+	testB.SetRandomUniformDistribution();
+	testC.SetRandomUniformDistribution();
+	testD.SetRandomUniformDistribution();
+	testF.SetRandomUniformDistribution();
+
+	testF.Print();
+
+	Utils::SimdHelper<float>::Type values0 = testF.GetRow<0, 0>();
+	Utils::SimdHelper<float>::Type values1 = testF.GetRow<0, 1>();
+	Utils::SimdHelper<float>::Type values2 = testF.GetRow<0, 2>();
+
+	const float* valuesRowAddr = testF.GetRowAddress<0>(1);
+	const float* valuesRowAddrT = testF.GetRowAddress<0, 1>();
+	const float* fullValuesRowAddr = testF.GetFullRowAddress<0>();
+	const float* fullValuesAddr = testF.GetFullAddress();
+
+	constexpr uint32 totalOffsetCount = testF.GetTotalOffset();
+	Utils::SimdHelper<float>::Type buffer[totalOffsetCount];
+	testF.IterateRow<0>(
+		[&testF, &buffer](const int32 _row, const int32 _offset)
+		{
+			buffer[_offset] = Utils::SimdHelper<float>::Load(testF.GetRowAddress(_row, _offset));
+		});
+
+
+	float _0_0 = Utils::SimdHelper<float>::GetValueByIndex<0>(values0);
+	float _0_4 = Utils::SimdHelper<float>::GetValueByIndex<3>(values0);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

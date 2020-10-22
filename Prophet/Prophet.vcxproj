@@ -175,9 +175,11 @@
     <ClInclude Include="Core\BasicDefines.h" />
     <ClInclude Include="Core\BasicTypes.h" />
     <ClInclude Include="Core\Constants.h" />
-    <ClInclude Include="Core\Conversion.h" />
+    <ClInclude Include="Core\SimdHelper.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Math\LinearAlgebra.h" />
     <ClInclude Include="Math\Matrix.h" />
+    <ClInclude Include="Math\Vector.h" />
     <ClInclude Include="Prophet.h" />
   </ItemGroup>
   <ItemGroup>
