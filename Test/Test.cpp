@@ -24,19 +24,19 @@ int main()
 
 	//////////////////////////////////////////////////////////////////////////
 	// Test Hadamard product of matrices
-	std::cout << "Hadamard product of matrices" << std::endl << std::endl;
+	std::cout << "1) Hadamard product of matrices" << std::endl << std::endl;
 	testB.SetRandomUniformDistribution();
 	testC.SetRandomUniformDistribution();
 
-	std::cout << "testB" << std::endl;
+	std::cout << "testB [" << testB.GetRowsCount() << "][" << testB.GetColumnsCount() << "]" << std::endl;
 	testB.Print();
 
-	std::cout << "testC" << std::endl;
+	std::cout << "testC [" << testC.GetRowsCount() << "][" << testC.GetColumnsCount() << "]" << std::endl;
 	testC.Print();
 
 	Matrix resultBxC = LinearAlgebra::Multiply(testB, testC);
 
-	std::cout << "testB X testC" << std::endl;
+	std::cout << "testB X testC [" << resultBxC.GetRowsCount() << "][" << resultBxC.GetColumnsCount() << "]" << std::endl;
 	resultBxC.Print();
 
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
@@ -44,10 +44,10 @@ int main()
 
 	//////////////////////////////////////////////////////////////////////////
 	// Test scalar product
-	std::cout << "Scalar product" << std::endl << std::endl;
+	std::cout << "2) Scalar product" << std::endl << std::endl;
 	testD.SetRandomUniformDistribution();
 
-	std::cout << "testD" << std::endl;
+	std::cout << "testD [" << testD.GetRowsCount() << "][" << testD.GetColumnsCount() << "]" << std::endl;
 	testD.Print();
 
 	constexpr float scalarValueMul = 10.0f;
@@ -55,7 +55,7 @@ int main()
 
 	Matrix scalarMultiplication = LinearAlgebra::Multiply(testD, scalarValueMul);
 
-	std::cout << "testD x " << scalarValueMul << std::endl;
+	std::cout << "testD x " << scalarValueMul << " [" << scalarMultiplication.GetRowsCount() << "][" << scalarMultiplication.GetColumnsCount() << "]" << std::endl;
 	scalarMultiplication.Print();
 
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
