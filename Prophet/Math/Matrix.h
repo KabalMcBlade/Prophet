@@ -55,10 +55,21 @@ public:
 		}
 	}
 
-	INLINE constexpr uint32 GetRowsCount() const { return ROWS; };
-	INLINE constexpr uint32 GetColumnsCount() const { return COLUMNS; };
-	INLINE constexpr uint32 GetColumnOffsetCount() const { return static_cast<uint32>(Utils::Ceil(static_cast<float>(COLUMNS / SCALAR_COUNT))); };
-	INLINE constexpr uint32 GetTotalOffset() const { return ROWS * COLUMNS; };
+	INLINE void SetValue(T _value)
+	{
+		for (uint32 row = 0; row < ROWS; ++row)
+		{
+			for (uint32 col = 0; col < COLUMNS; ++col)
+			{
+				m_buffer[row][col] = _value;
+			}
+		}
+	}
+
+	INLINE const uint32 GetRowsCount() const { return ROWS; };
+	INLINE const uint32 GetColumnsCount() const { return COLUMNS; };
+	INLINE const uint32 GetColumnOffsetCount() const { return static_cast<uint32>(Utils::Ceil(static_cast<float>(COLUMNS / SCALAR_COUNT))); };
+	INLINE const uint32 GetTotalOffset() const { return ROWS * COLUMNS; };
 
 	template<uint32 _ROW, uint32 _COL>
 	INLINE void Set(const T& value)
@@ -222,6 +233,14 @@ public:
 		Utils::MemCpy(&m_buffer[0], &a.m_buffer[0], sizeof(m_buffer));
 	}
 
+	INLINE void SetValue(T _value)
+	{
+		for (uint32 row = 0; row < ROWS; ++row)
+		{
+			m_buffer[row]= _value;
+		}
+	}
+
 	INLINE void SetRandomUniformDistribution()
 	{
 		int32 seed = static_cast<int32>(time(0));
@@ -235,10 +254,10 @@ public:
 		}
 	}
 
-	INLINE constexpr uint32 GetRowsCount() const { return ROWS; };
-	INLINE constexpr uint32 GetColumnsCount() const { return 0; };
-	INLINE constexpr uint32 GetColumnOffsetCount() const { return 0; };
-	INLINE constexpr uint32 GetTotalOffset() const { return ROWS; };
+	INLINE const uint32 GetRowsCount() const { return ROWS; };
+	INLINE const uint32 GetColumnsCount() const { return 0; };
+	INLINE const uint32 GetColumnOffsetCount() const { return 0; };
+	INLINE const uint32 GetTotalOffset() const { return ROWS; };
 
 	template<uint32 _ROW>
 	INLINE void Set(T value)

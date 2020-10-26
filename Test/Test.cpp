@@ -18,6 +18,7 @@ int main()
 	Matrix<float, 6, 3> testD;
 	Matrix<float, 3, 7> testE;
 	Matrix<float, 5, 10> testF;
+	Matrix<float, 5, 10> testFX;
 	Vector<float, 7> testVecA;
 	testVecA.SetRandomUniformDistribution();
 	//testVecA.Print();
@@ -26,6 +27,7 @@ int main()
 	testC.SetRandomUniformDistribution();
 	testD.SetRandomUniformDistribution();
 	testF.SetRandomUniformDistribution();
+	testFX.SetRandomUniformDistribution();
 
 	testF.Print();
 
@@ -42,8 +44,10 @@ int main()
 	float _0_4 = Utils::SimdHelper<float>::GetValueByIndex<3>(values0);
 
 	Matrix<float, 5, 10> resultF = LinearAlgebra::Multiply<float, 5, 10>(testF, 10.0f);
+	Matrix<float, 5, 10> resultFX = LinearAlgebra::Multiply<float, 5, 10>(testFX, testF);
 
 	resultF.Print();
+	resultFX.Print();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
