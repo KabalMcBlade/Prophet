@@ -9,6 +9,8 @@ USING_PROPHET
 
 int main()
 {
+	// NOTE testF is the one used everywhere!
+
 	//Matrix<std::string> a;	// static assert works
 	Matrix<float, 2, 0> testA;
 	Matrix<float, 2, 3> testB;
@@ -33,20 +35,15 @@ int main()
 
 	const float* valuesRowAddr = testF.GetRowAddress<0>(1);
 	const float* valuesRowAddrT = testF.GetRowAddress<0, 1>();
-	const float* fullValuesRowAddr = testF.GetFullRowAddress<0>();
-	const float* fullValuesAddr = testF.GetFullAddress();
-
-	constexpr uint32 totalOffsetCount = testF.GetTotalOffset();
-	Utils::SimdHelper<float>::Type buffer[totalOffsetCount];
-	testF.IterateRow<0>(
-		[&testF, &buffer](const int32 _row, const int32 _offset)
-		{
-			buffer[_offset] = Utils::SimdHelper<float>::Load(testF.GetRowAddress(_row, _offset));
-		});
-
+	const float* fullValuesRowAddr = testF.GetRowAddress(0);
+	const float* fullValuesAddr = testF.GetAddress();
 
 	float _0_0 = Utils::SimdHelper<float>::GetValueByIndex<0>(values0);
 	float _0_4 = Utils::SimdHelper<float>::GetValueByIndex<3>(values0);
+
+	Matrix<float, 5, 10> resultF = LinearAlgebra::Multiply<float, 5, 10>(testF, 10.0f);
+
+	resultF.Print();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

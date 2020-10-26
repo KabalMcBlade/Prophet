@@ -10,7 +10,6 @@ NAMESPACE_BEGIN
 
 namespace Utils
 {
-
 	template<typename T>
 	class SimdHelper
 	{
@@ -123,6 +122,41 @@ namespace Utils
 			}
 #endif
 		}
+
+
+		static INLINE void Get(T* _output, Type _value)
+		{
+#if ARCH & ARCH_AVX512_FLAG
+			if constexpr (std::is_same<int, T>::value)
+			{
+				_mm512_stream_si512(_output, _value);
+			}
+			else
+			{
+				_mm512_stream_ps(_output, _value);
+			}
+#elif (ARCH & ARCH_AVX_FLAG)
+			if constexpr (std::is_same<int, T>::value)
+			{
+				_mm256_stream_si256((__m256i*) & _output[0], _value);
+			}
+			else
+			{
+				_mm256_stream_ps(_output, _value);
+			}
+#else
+			if constexpr (std::is_same<int, T>::value)
+			{
+				_mm_stream_si32(_output, _value);
+			}
+			else
+			{
+				_mm_stream_ps(_output, _value);
+			}
+#endif
+			_mm_mfence();
+		}
+
 
 		static INLINE Type Load(T const* _addr)
 		{
