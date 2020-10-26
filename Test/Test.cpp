@@ -9,45 +9,57 @@ USING_PROPHET
 
 int main()
 {
-	// NOTE testF is the one used everywhere!
-
+	//////////////////////////////////////////////////////////////////////////
+	// Test initialization matrices
 	//Matrix<std::string> a;	// static assert works
 	Matrix<float, 2, 0> testA;
-	Matrix<float, 2, 3> testB;
-	Matrix<float, 2, 5> testC;
+	Matrix<float, 2, 5> testB;
+	Matrix<float, 2, 3> testC;
 	Matrix<float, 6, 3> testD;
 	Matrix<float, 3, 7> testE;
-	Matrix<float, 5, 10> testF;
-	Matrix<float, 5, 10> testFX;
-	Vector<float, 7> testVecA;
-	testVecA.SetRandomUniformDistribution();
-	//testVecA.Print();
 
+	Matrix<float, 5, 10> testF;
+	Matrix<float, 5, 10> testFxF;
+	//////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////
+	// Test Hadamard product of matrices
+	std::cout << "Hadamard product of matrices" << std::endl << std::endl;
 	testB.SetRandomUniformDistribution();
 	testC.SetRandomUniformDistribution();
+
+	std::cout << "testB" << std::endl;
+	testB.Print();
+
+	std::cout << "testC" << std::endl;
+	testC.Print();
+
+	Matrix resultBxC = LinearAlgebra::Multiply(testB, testC);
+
+	std::cout << "testB X testC" << std::endl;
+	resultBxC.Print();
+
+	std::cout << "---------------------------------------------" << std::endl << std::endl;
+	//////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////
+	// Test scalar product
+	std::cout << "Scalar product" << std::endl << std::endl;
 	testD.SetRandomUniformDistribution();
-	testF.SetRandomUniformDistribution();
-	testFX.SetRandomUniformDistribution();
 
-	testF.Print();
+	std::cout << "testD" << std::endl;
+	testD.Print();
 
-	Utils::SimdHelper<float>::Type values0 = testF.GetRow<0, 0>();
-	Utils::SimdHelper<float>::Type values1 = testF.GetRow<0, 1>();
-	Utils::SimdHelper<float>::Type values2 = testF.GetRow<0, 2>();
+	constexpr float scalarValueMul = 10.0f;
+	std::cout << "Scalar value " << scalarValueMul << std::endl << std::endl;
 
-	const float* valuesRowAddr = testF.GetRowAddress<0>(1);
-	const float* valuesRowAddrT = testF.GetRowAddress<0, 1>();
-	const float* fullValuesRowAddr = testF.GetRowAddress(0);
-	const float* fullValuesAddr = testF.GetAddress();
+	Matrix scalarMultiplication = LinearAlgebra::Multiply(testD, scalarValueMul);
 
-	float _0_0 = Utils::SimdHelper<float>::GetValueByIndex<0>(values0);
-	float _0_4 = Utils::SimdHelper<float>::GetValueByIndex<3>(values0);
+	std::cout << "testD x " << scalarValueMul << std::endl;
+	scalarMultiplication.Print();
 
-	Matrix<float, 5, 10> resultF = LinearAlgebra::Multiply<float, 5, 10>(testF, 10.0f);
-	Matrix<float, 5, 10> resultFX = LinearAlgebra::Multiply<float, 5, 10>(testFX, testF);
-
-	resultF.Print();
-	resultFX.Print();
+	std::cout << "---------------------------------------------" << std::endl << std::endl;
+	//////////////////////////////////////////////////////////////////////////
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

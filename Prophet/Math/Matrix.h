@@ -41,16 +41,15 @@ public:
 
 	INLINE void SetRandomUniformDistribution()
 	{
-		int32 seed = static_cast<int32>(time(0));
-		std::default_random_engine random_engine(seed);
-
+		std::random_device rd;
+		std::default_random_engine generator(rd());
 		std::uniform_real_distribution<T> uniform(-1, 1);
 
 		for (uint32 row = 0; row < ROWS; ++row)
 		{
 			for (uint32 col = 0; col < COLUMNS; ++col)
 			{
-				m_buffer[row][col] = uniform(random_engine);
+				m_buffer[row][col] = uniform(generator);
 			}
 		}
 	}
@@ -243,14 +242,13 @@ public:
 
 	INLINE void SetRandomUniformDistribution()
 	{
-		int32 seed = static_cast<int32>(time(0));
-		std::default_random_engine random_engine(seed);
-
+		std::random_device rd;
+		std::default_random_engine generator(rd());
 		std::uniform_real_distribution<T> uniform(-1, 1);
 
 		for (uint32 row = 0; row < ROWS; ++row)
 		{
-			m_buffer[row] = uniform(random_engine);
+			m_buffer[row] = uniform(generator);
 		}
 	}
 
