@@ -15,8 +15,8 @@
 
 NAMESPACE_BEGIN
 
-template<typename T, uint32 ROWS>
-class Vector : public Matrix<T, ROWS, 0>
+template<typename T, uint32 COUNT>
+class Vector : public Matrix<T, COUNT, 0>
 {
 };
 

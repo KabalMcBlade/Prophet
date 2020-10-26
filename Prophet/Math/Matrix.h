@@ -362,7 +362,7 @@ public:
 		{
 			std::cout << m_buffer[i] << " ";
 		}
-		std::cout << std::endl;
+		std::cout << std::endl << std::endl;
 	}
 
 private:

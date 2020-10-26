@@ -67,8 +67,6 @@ namespace LinearAlgebra
 		return m;
 	}
 
-
-
 	template<typename T, uint32 ROWS, uint32 COLUMNS_SRC, uint32 COLUMNS_DST>
 	static INLINE Matrix<T, ROWS, COLUMNS_DST> Multiply(const Matrix<T, ROWS, COLUMNS_SRC>& _matrixA, const Matrix<T, ROWS, COLUMNS_DST>& _matrixB)
 	{
@@ -94,6 +92,31 @@ namespace LinearAlgebra
 		}
 
 		return m;
+	}
+
+	template<typename T, uint32 COUNT>
+	static INLINE Vector<T, COUNT> Multiply(const Vector<T, COUNT>& _vectorA, const Vector<T, COUNT>& _vectorB)
+	{
+		AssertReturnValue(_vectorA.GetRowsCount() == _vectorB.GetRowsCount(), _vectorA, "Vectors must have the same size");
+
+		constexpr uint32 left = COUNT % SCALAR_COUNT;
+		constexpr uint32 steps = (COUNT / SCALAR_COUNT) + (left != 0);
+
+		const T* addrA = _vectorA.GetAddress();
+		const T* addrB = _vectorB.GetAddress();
+
+		Vector<T, COUNT> v;
+
+		for (uint32 i = 0, j = 0; i < steps; ++i, j += SCALAR_COUNT)
+		{
+			const typename Utils::SimdHelper<T>::Type bufferA = Utils::SimdHelper<T>::Load(&addrA[j]);
+			const typename Utils::SimdHelper<T>::Type bufferB = Utils::SimdHelper<T>::Load(&addrB[j]);
+			const typename Utils::SimdHelper<T>::Type result = Utils::SimdHelper<T>::Mul(bufferA, bufferB);
+
+			v.SetAddress(i, result);
+		}
+
+		return v;
 	}
 }
 

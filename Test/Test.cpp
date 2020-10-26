@@ -10,20 +10,21 @@ USING_PROPHET
 int main()
 {
 	//////////////////////////////////////////////////////////////////////////
-	// Test initialization matrices
-	//Matrix<std::string> a;	// static assert works
-	Matrix<float, 2, 0> testA;
-	Matrix<float, 2, 5> testB;
-	Matrix<float, 2, 3> testC;
-	Matrix<float, 6, 3> testD;
-	Matrix<float, 3, 7> testE;
 
-	Matrix<float, 5, 10> testF;
-	Matrix<float, 5, 10> testFxF;
+	// Check static assert due by type is working
+	//Matrix<std::string> a;	// static assert works
+
 	//////////////////////////////////////////////////////////////////////////
+
+	// Check if generate the Matrix 1D
+	Matrix<float, 2, 0> testA;
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// Test Hadamard product of matrices
+	Matrix<float, 2, 5> testB;
+	Matrix<float, 2, 3> testC;
+
 	std::cout << "1) Hadamard product of matrices" << std::endl << std::endl;
 	testB.SetRandomUniformDistribution();
 	testC.SetRandomUniformDistribution();
@@ -42,9 +43,12 @@ int main()
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
 	//////////////////////////////////////////////////////////////////////////
 
+
 	//////////////////////////////////////////////////////////////////////////
 	// Test scalar product
-	std::cout << "2) Scalar product" << std::endl << std::endl;
+	Matrix<float, 6, 3> testD;
+
+	std::cout << "2) Matrix scalar product" << std::endl << std::endl;
 	testD.SetRandomUniformDistribution();
 
 	std::cout << "testD [" << testD.GetRowsCount() << "][" << testD.GetColumnsCount() << "]" << std::endl;
@@ -57,6 +61,30 @@ int main()
 
 	std::cout << "testD x " << scalarValueMul << " [" << scalarMultiplication.GetRowsCount() << "][" << scalarMultiplication.GetColumnsCount() << "]" << std::endl;
 	scalarMultiplication.Print();
+
+	std::cout << "---------------------------------------------" << std::endl << std::endl;
+	//////////////////////////////////////////////////////////////////////////
+
+
+	//////////////////////////////////////////////////////////////////////////
+	// Test Hadamard product of vectors
+	Vector<float, 6> testVecA;
+	Vector<float, 6> testVecB;
+
+	std::cout << "3) Hadamard product of vectors" << std::endl << std::endl;
+	testVecA.SetRandomUniformDistribution();
+	testVecB.SetRandomUniformDistribution();
+
+	std::cout << "testVecA [" << testVecA.GetRowsCount() << "]" << std::endl;
+	testVecA.Print();
+
+	std::cout << "testVecB [" << testVecB.GetRowsCount() << "]" << std::endl;
+	testVecB.Print();
+
+	Vector resultVecAxVecC = LinearAlgebra::Multiply(testVecA, testVecB);
+
+	std::cout << "testVecA X testVecB [" << resultVecAxVecC.GetRowsCount() << "]" << std::endl;
+	resultVecAxVecC.Print();
 
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
 	//////////////////////////////////////////////////////////////////////////
