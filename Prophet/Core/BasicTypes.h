@@ -10,6 +10,9 @@
 #include <limits>
 #include <utility>      // for move, etc...
 
+#include <type_traits>
+
+
 #ifdef _DEBUG
 #include <iostream>
 #endif
