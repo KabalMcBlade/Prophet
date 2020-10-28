@@ -53,4 +53,4 @@ There is a Test project and folder where you can find some test to run.
 
 | Platform | Build Status |
 |:--------:|:------------:|
-| Windows (Visual Studio 2019) | [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/kabalmcblade/prophet?branch=master&svg=true)](https://ci.appveyor.com/project/kabalmcblade/prophet) |
+| Windows (Visual Studio 2019) | [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/kabalmcblade/prophet?branch=main&svg=true)](https://ci.appveyor.com/project/kabalmcblade/prophet) |
