@@ -19,6 +19,7 @@ NAMESPACE_BEGIN
 
 namespace LinearAlgebra
 {
+#pragma region Matrices
 	template<typename T, uint32 ROWS, uint32 COLUMNS>
 	static INLINE Matrix<T, ROWS, COLUMNS> Multiply(const Matrix<T, ROWS, COLUMNS>& _matrix, T _value)
 	{
@@ -93,7 +94,9 @@ namespace LinearAlgebra
 
 		return m;
 	}
-
+#pragma endregion
+	
+#pragma region Vectors
 	template<typename T, uint32 COUNT>
 	static INLINE Vector<T, COUNT> Multiply(const Vector<T, COUNT>& _vector, T _value)
 	{
@@ -139,6 +142,7 @@ namespace LinearAlgebra
 
 		return v;
 	}
+#pragma endregion
 }
 
 NAMESPACE_END

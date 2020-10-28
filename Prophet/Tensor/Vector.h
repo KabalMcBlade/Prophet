@@ -18,24 +18,25 @@ namespace __private
 		static_assert(std::numeric_limits<T>::is_integer || std::is_same<float, T>::value, "Vector can be only integer or float");
 
 	public:
+#pragma region Types
 		typedef T Type[PRIMARY_DIMENSION];
+#pragma endregion
 
-		//
-		// CONSTRUCTORS
+#pragma region Constructors
 		INLINE Array() = default;
 		INLINE Array(Array const&) = default;
+#pragma endregion
 
-		//
-		// MEMBER DATA
+#pragma region Member variables
 		ALIGNED Type m_data;
+#pragma endregion
 
-		//
-		// ACCESSORS
+#pragma region Accessors
 		INLINE constexpr unsigned Rank() const { return 1; }
 		INLINE constexpr unsigned Dim() const { return PRIMARY_DIMENSION; }
+#pragma endregion
 
-		//
-		// OPERATORS
+#pragma region Operators
 		INLINE const T& operator[](unsigned _i) const { return m_data[_i]; }
 		INLINE T& operator[](unsigned _i) { return m_data[_i]; }
 		INLINE operator T const* () const { return &m_data[0]; }
@@ -52,9 +53,9 @@ namespace __private
 
 			return _os;
 		}
-
-		//
-		// METHODS
+#pragma endregion
+		
+#pragma region Methods
 		INLINE void Clear()
 		{
 			memset(&m_data[0], 0, sizeof(m_data));
@@ -98,6 +99,7 @@ namespace __private
 				Utils::SimdHelper<T>::Get(&m_data[_offset * SCALAR_COUNT], _value);
 			}
 		}
+#pragma endregion
 	};
 }
 

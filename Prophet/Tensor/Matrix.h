@@ -15,26 +15,27 @@ namespace __private
 		static_assert(std::numeric_limits<T>::is_integer || std::is_same<float, T>::value, "Matrix can be only integer or float");
 
 	public:
+#pragma region Types
 		typedef typename Array<T, SECONDARY_DIMENSION>::Type OneDimensionDownArrayT;
 		typedef OneDimensionDownArrayT Type[PRIMARY_DIMENSION];
+#pragma endregion
 
-		//
-		// CONSTRUCTORS
+#pragma region Constructors
 		INLINE Array() = default;
 		INLINE Array(Array const&) = default;
+#pragma endregion
 
-		//
-		// MEMBER DATA
+#pragma region Member variables
 		ALIGNED Type m_data;
+#pragma endregion
 
-		//
-		// ACCESSORS
+#pragma region Accessors
 		INLINE constexpr unsigned Rank() const { return 2; }
 		INLINE constexpr unsigned Rows() const { return PRIMARY_DIMENSION; }
 		INLINE constexpr unsigned Columns() const { return SECONDARY_DIMENSION; }
+#pragma endregion
 
-		//
-		// OPERATORS
+#pragma region Operators
 		INLINE const OneDimensionDownArrayT& operator[](unsigned _i) const { return m_data[_i]; }
 		INLINE OneDimensionDownArrayT& operator[](unsigned _i) { return m_data[_i]; }
 		INLINE operator T const* () const { return &m_data[0][0]; }
@@ -53,9 +54,9 @@ namespace __private
 
 			return _os;
 		}
+#pragma endregion
 
-		//
-		// METHODS
+#pragma region Methods
 		INLINE void Clear()
 		{
 			memset(&m_data[0][0], 0, sizeof(m_data));
@@ -105,6 +106,7 @@ namespace __private
 				Utils::SimdHelper<T>::Get(&ptr[_offset * SCALAR_COUNT], _value);
 			}
 		}
+#pragma endregion
 	};
 }
 

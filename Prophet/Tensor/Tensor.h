@@ -9,6 +9,7 @@ NAMESPACE_BEGIN
 
 namespace __private
 {
+#pragma region Variadic template aggregate
 	template<size ...>
 	struct AddAll : std::integral_constant< size, 0 > {};
 
@@ -19,8 +20,8 @@ namespace __private
 	struct MulAll : std::integral_constant< size, 1 > {};
 
 	template<size X, size ... Xs>
-	struct MulAll<X, Xs...> : std::integral_constant< size, X * MulAll<Xs...>::value > {};
-
+	struct MulAll<X, Xs...> : std::integral_constant< size, X* MulAll<Xs...>::value > {};
+#pragma endregion
 
 	template<typename T, unsigned PRIMARY_DIMENSION, unsigned ... OTHER_DIMENSIONS>
 	class Array<T, PRIMARY_DIMENSION, OTHER_DIMENSIONS...>
@@ -28,28 +29,31 @@ namespace __private
 		static_assert(std::numeric_limits<T>::is_integer || std::is_same<float, T>::value, "Tensor can be only integer or float");
 
 	public:
+#pragma region Constants values
 		static constexpr int32 kDimensionSize = PRIMARY_DIMENSION + AddAll< OTHER_DIMENSIONS... >::value;
 		static constexpr int32 kDimensionShape = PRIMARY_DIMENSION * MulAll< OTHER_DIMENSIONS... >::value;
+#pragma endregion
 
+#pragma region Types
 		typedef typename T Param;
 		typedef typename Array<Param, OTHER_DIMENSIONS...>::Type OneDimensionDownArrayT;
 		typedef OneDimensionDownArrayT Type[PRIMARY_DIMENSION];
+#pragma endregion
 
-		//
-		// CONSTRUCTORS
+#pragma region Constructors
 		INLINE Array() = default;
 		INLINE Array(Array const&) = default;
+#pragma endregion
 
-		//
-		// MEMBER DATA
+#pragma region Member variables
 		ALIGNED Type m_data;
+#pragma endregion
 
-		//
-		// ACCESSORS
+#pragma region Accessors
 		INLINE constexpr unsigned Rank() const { return sizeof...(OTHER_DIMENSIONS) + PRIMARY_DIMENSION; }
+#pragma endregion
 
-		//
-		// OPERATORS
+#pragma region Operators
 		INLINE const OneDimensionDownArrayT& operator[](unsigned _i) const { return m_data[_i]; }
 		INLINE OneDimensionDownArrayT& operator[](unsigned _i) { return m_data[_i]; }
 		INLINE operator Param const* () const { return GetBaseAddress(); }
@@ -60,9 +64,9 @@ namespace __private
 			Print(_os, _other, PRIMARY_DIMENSION, OTHER_DIMENSIONS...);
 			return _os;
 		}
+#pragma endregion
 
-		//
-		// METHODS
+#pragma region Public Methods
 		INLINE void Clear()
 		{
 			memset(GetBaseAddress(), 0, sizeof(m_data));
@@ -114,13 +118,11 @@ namespace __private
 				Utils::SimdHelper<T>::Get(&ptr[_offset * SCALAR_COUNT], _value);
 			}
 		}
+#pragma endregion
+
 
 	private:
-		//
-		// METHODS
-
-		//
-		// BEGIN PRINT FUNCTIONS
+#pragma region Print methods
 		static INLINE void Print(std::ostream& _os, const Array::Param& _value)
 		{
 			_os << _value << " ";
@@ -169,11 +171,9 @@ namespace __private
 			}
 			_os << std::endl;
 		}
-		// END PRINT FUNCTIONS
-		//
+#pragma endregion
 
-		//
-		// BEGIN GET BASE ADDRESS FUNCTIONS
+#pragma region Get base address methods
 		INLINE Param* GetBaseAddress()
 		{
 			return GetBaseAddress(m_data, PRIMARY_DIMENSION, OTHER_DIMENSIONS...);
@@ -211,22 +211,7 @@ namespace __private
 			auto& data = _other[0];
 			return GetBaseAddress(data, _rest...);
 		}
-		// END GET BASE ADDRESS FUNCTIONS
-		//
-
-		//
-		// INTERNAL HELPERS
-		template<typename ...Args>
-		constexpr INLINE int32 SumArgs(Args&&... args)
-		{
-			return (args + ... + PRIMARY_DIMENSION);
-		}
-
-		template<typename ...Args>
-		constexpr INLINE int32 MulArgs(Args&&... args)
-		{
-			return (args * ... * PRIMARY_DIMENSION);
-		}
+#pragma endregion
 	};
 }
 
