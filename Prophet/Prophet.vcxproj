@@ -180,9 +180,12 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="Math\LinearAlgebra.h" />
     <ClInclude Include="Math\MathHelper.h" />
-    <ClInclude Include="Math\Matrix.h" />
-    <ClInclude Include="Math\Vector.h" />
+    <ClInclude Include="Tensor\Matrix.h" />
+    <ClInclude Include="Tensor\Scalar.h" />
+    <ClInclude Include="Tensor\Tensor.h" />
+    <ClInclude Include="Tensor\Vector.h" />
     <ClInclude Include="Prophet.h" />
+    <ClInclude Include="Tensor\Array.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

@@ -9,82 +9,163 @@ USING_PROPHET
 
 int main()
 {
-	//////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////
 
-	// Check static assert due by type is working
-	//Matrix<std::string> a;	// static assert works
+// 	Scalar<int> scalar1 = 4;
+// 	Scalar<int> scalar2 = 2;
+// 	Scalar<int> scalarSum = scalar1 + scalar2;
+// 
+// 	std::cout << scalar1 << " + " << scalar2 << " = " << scalarSum << std::endl << std::endl;
+// 
+// 	Vector<int, 3> vec3 { {1, 2, 3} };
+// 	std::cout << vec3[1] << std::endl << std::endl;
+// 	std::cout << vec3 << std::endl << std::endl;
+// 
+// 	Vector<int, 5> vec5_t { {10, 8, 6, 4, 2} };
+// 
+// 	Vector<int, 5> vec5;
+// 	vec5.CopyFrom(vec5_t);
+// 	vec5.SetRandomUniformDistribution();
+// 	std::cout << vec5[1] << std::endl << std::endl;
+// 
+// 
+// 	Matrix<int, 2, 3> matrix2x3{ { { 1, 2, 3}, { 4, 5, 6} } };
+// 	std::cout << matrix2x3[1][2] << std::endl << std::endl;
+// 
+// 	std::cout << matrix2x3 << std::endl << std::endl;
+// 
+// 	Tensor<int, 1, 2, 3> tensor1x2x3 { { { { 10, 20, 30}, { 40, 50, 60} } } };
+// 	Tensor<int, 1, 2, 3, 4> tensor1x2x3x4{ { { { { 10, 20, 30, 40}, { 50, 60, 70, 80}, { 90, 100, 110, 120} }, { { 11, 22, 33, 44}, { 55, 66, 77, 88}, { 99, 110, 121, 132} } } } };
+// 	Tensor<int, 1, 2, 3, 4> tensor1x2x3x4_for_cpy{ { { { { 9, 8, 7, 6}, { 5, 4, 3, 2}, { 17, 13, 19, 23} }, { { 1, 2, 3, 4}, { 4, 3, 2, 1}, { 7, 7, 9, 9} } } } };
+// 	tensor1x2x3x4.Clear();
+// 	tensor1x2x3x4.CopyFrom(tensor1x2x3x4_for_cpy);
+// 
+// 	std::cout << std::endl;
+// 
+// 	std::cout << "Rank: " << tensor1x2x3.Rank() << std::endl;
+// 	std::cout << "Rank: " << tensor1x2x3x4.Rank() << std::endl << std::endl;
+// 
+// 	std::cout << tensor1x2x3 << std::endl << std::endl;
+// 	std::cout << tensor1x2x3x4 << std::endl << std::endl;
+// 
+// 	const Tensor<int, 1, 2, 3, 4>::Param* baseAddr = tensor1x2x3x4;
+// 	const int* baseAddr = tensor1x2x3x4;
+// 	std::cout << baseAddr;
 
-	//////////////////////////////////////////////////////////////////////////
-
-	// Check if generate the Matrix 1D
-	Matrix<float, 2, 0> testA;
-
-
-	//////////////////////////////////////////////////////////////////////////
-	// Test Hadamard product of matrices
-	Matrix<float, 2, 5> testB;
-	Matrix<float, 2, 3> testC;
-
-	std::cout << "1) Hadamard product of matrices" << std::endl << std::endl;
-	testB.SetRandomUniformDistribution();
-	testC.SetRandomUniformDistribution();
-
-	std::cout << "testB [" << testB.GetRowsCount() << "][" << testB.GetColumnsCount() << "]" << std::endl;
-	testB.Print();
-
-	std::cout << "testC [" << testC.GetRowsCount() << "][" << testC.GetColumnsCount() << "]" << std::endl;
-	testC.Print();
-
-	Matrix resultBxC = LinearAlgebra::Multiply(testB, testC);
-
-	std::cout << "testB X testC [" << resultBxC.GetRowsCount() << "][" << resultBxC.GetColumnsCount() << "]" << std::endl;
-	resultBxC.Print();
-
-	std::cout << "---------------------------------------------" << std::endl << std::endl;
-	//////////////////////////////////////////////////////////////////////////
-
-
-	//////////////////////////////////////////////////////////////////////////
-	// Test scalar product
-	Matrix<float, 6, 3> testD;
-
-	std::cout << "2) Matrix scalar product" << std::endl << std::endl;
-	testD.SetRandomUniformDistribution();
-
-	std::cout << "testD [" << testD.GetRowsCount() << "][" << testD.GetColumnsCount() << "]" << std::endl;
-	testD.Print();
 
 	constexpr float scalarValueMul = 10.0f;
+
+	//////////////////////////////////////////////////////////////////////////
+	// Test Vector scalar product
+	Vector<float, 6> scalarVectorProduct;
+
+	std::cout << "1) Vector scalar product" << std::endl << std::endl;
+	scalarVectorProduct.SetRandomUniformDistribution();
+
+	std::cout << "Rank: " << scalarVectorProduct.Rank() << std::endl << std::endl;
+	std::cout << "Original Vector value" << std::endl << std::endl;
+	std::cout << scalarVectorProduct << std::endl;
+
 	std::cout << "Scalar value " << scalarValueMul << std::endl << std::endl;
 
-	Matrix scalarMultiplication = LinearAlgebra::Multiply(testD, scalarValueMul);
-
-	std::cout << "testD x " << scalarValueMul << " [" << scalarMultiplication.GetRowsCount() << "][" << scalarMultiplication.GetColumnsCount() << "]" << std::endl;
-	scalarMultiplication.Print();
+	Vector<float, 6> scalarVectorMultiplication = LinearAlgebra::Multiply(scalarVectorProduct, scalarValueMul);
+	std::cout << "Computed scalar Vector multiplication" << std::endl << std::endl;
+	std::cout << scalarVectorMultiplication << std::endl;
 
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
 	//////////////////////////////////////////////////////////////////////////
 
+	//////////////////////////////////////////////////////////////////////////
+	// Test Vector scalar product
+	Vector<float, 6> vectorProductA;
+	Vector<float, 6> vectorProductB;
+
+	std::cout << "2) Vectors product" << std::endl << std::endl;
+	vectorProductA.SetRandomUniformDistribution();
+	vectorProductB.SetRandomUniformDistribution();
+
+	std::cout << "Rank A: " << vectorProductA.Rank() << std::endl << std::endl;
+	std::cout << "Rank B: " << vectorProductB.Rank() << std::endl << std::endl;
+
+	std::cout << "Original Vector A value" << std::endl << std::endl;
+	std::cout << vectorProductA << std::endl;
+
+	std::cout << "Original Vector B value" << std::endl << std::endl;
+	std::cout << vectorProductB << std::endl;
+
+	Vector<float, 6> vectorMultiplication = LinearAlgebra::Multiply(vectorProductA, vectorProductB);
+	std::cout << "Computed Vectors multiplication" << std::endl << std::endl;
+	std::cout << vectorMultiplication << std::endl;
+
+	std::cout << "---------------------------------------------" << std::endl << std::endl;
+	//////////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////////////////
-	// Test Hadamard product of vectors
-	Vector<float, 6> testVecA;
-	Vector<float, 6> testVecB;
+	// Test Matrix scalar product
+	Matrix<float, 6, 3> scalarMatrixProduct;
 
-	std::cout << "3) Hadamard product of vectors" << std::endl << std::endl;
-	testVecA.SetRandomUniformDistribution();
-	testVecB.SetRandomUniformDistribution();
+	std::cout << "3) Matrix scalar product" << std::endl << std::endl;
+	scalarMatrixProduct.SetRandomUniformDistribution();
 
-	std::cout << "testVecA [" << testVecA.GetRowsCount() << "]" << std::endl;
-	testVecA.Print();
+	std::cout << "Rank: " << scalarMatrixProduct.Rank() << std::endl << std::endl;
+	std::cout << "Original Matrix value" << std::endl << std::endl;
+	std::cout << scalarMatrixProduct << std::endl;
 
-	std::cout << "testVecB [" << testVecB.GetRowsCount() << "]" << std::endl;
-	testVecB.Print();
+	std::cout << "Scalar value " << scalarValueMul << std::endl << std::endl;
 
-	Vector resultVecAxVecC = LinearAlgebra::Multiply(testVecA, testVecB);
+	Matrix<float, 6, 3> scalarMatrixMultiplication = LinearAlgebra::Multiply(scalarMatrixProduct, scalarValueMul);
+	std::cout << "Computed scalar Matrix multiplication" << std::endl << std::endl;
+	std::cout << scalarMatrixMultiplication << std::endl;
 
-	std::cout << "testVecA X testVecB [" << resultVecAxVecC.GetRowsCount() << "]" << std::endl;
-	resultVecAxVecC.Print();
+	std::cout << "---------------------------------------------" << std::endl << std::endl;
+	//////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////
+	// Test Hadamard product or Matrices product
+	Matrix<float, 6, 4> matrixProductA;
+	Matrix<float, 6, 4> matrixProductB;
+
+	std::cout << "4) Matrices product" << std::endl << std::endl;
+	matrixProductA.SetRandomUniformDistribution();
+	matrixProductB.SetRandomUniformDistribution();
+
+	std::cout << "Rank A: " << matrixProductA.Rank() << std::endl << std::endl;
+	std::cout << "Rank B: " << matrixProductB.Rank() << std::endl << std::endl;
+
+	std::cout << "Original Matrix A value" << std::endl << std::endl;
+	std::cout << matrixProductA << std::endl;
+
+	std::cout << "Original Matrix B value" << std::endl << std::endl;
+	std::cout << matrixProductB << std::endl;
+
+	Matrix<float, 6, 4> matricesMultiplication = LinearAlgebra::Multiply(matrixProductA, matrixProductB);
+	std::cout << "Computed Hadamard product or Matrices product" << std::endl << std::endl;
+	std::cout << matricesMultiplication << std::endl;
+
+	std::cout << "---------------------------------------------" << std::endl << std::endl;
+	//////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////
+	// Test Hadamard product or Matrices product
+	Matrix<float, 6, 8> matrixProductADiff;
+	Matrix<float, 6, 4> matrixProductBDiff;
+
+	std::cout << "5) Matrices product of different dimension same rank" << std::endl << std::endl;
+	matrixProductADiff.SetRandomUniformDistribution();
+	matrixProductBDiff.SetRandomUniformDistribution();
+
+	std::cout << "Rank A: " << matrixProductADiff.Rank() << std::endl << std::endl;
+	std::cout << "Rank B: " << matrixProductBDiff.Rank() << std::endl << std::endl;
+
+	std::cout << "Original Matrix A value" << std::endl << std::endl;
+	std::cout << matrixProductADiff << std::endl;
+
+	std::cout << "Original Matrix B value" << std::endl << std::endl;
+	std::cout << matrixProductBDiff << std::endl;
+
+	Matrix<float, 6, 4> matricesMultiplicationDiff = LinearAlgebra::Multiply(matrixProductADiff, matrixProductBDiff);
+	std::cout << "Computed Hadamard product or Matrices product" << std::endl << std::endl;
+	std::cout << matricesMultiplicationDiff << std::endl;
 
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
 	//////////////////////////////////////////////////////////////////////////
