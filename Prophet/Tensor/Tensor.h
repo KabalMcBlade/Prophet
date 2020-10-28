@@ -9,12 +9,28 @@ NAMESPACE_BEGIN
 
 namespace __private
 {
+	template<size ...>
+	struct AddAll : std::integral_constant< size, 0 > {};
+
+	template<size X, size ... Xs>
+	struct AddAll<X, Xs...> : std::integral_constant< size, X + AddAll<Xs...>::value > {};
+
+	template<size ...>
+	struct MulAll : std::integral_constant< size, 1 > {};
+
+	template<size X, size ... Xs>
+	struct MulAll<X, Xs...> : std::integral_constant< size, X * MulAll<Xs...>::value > {};
+
+
 	template<typename T, unsigned PRIMARY_DIMENSION, unsigned ... OTHER_DIMENSIONS>
 	class Array<T, PRIMARY_DIMENSION, OTHER_DIMENSIONS...>
 	{
 		static_assert(std::numeric_limits<T>::is_integer || std::is_same<float, T>::value, "Tensor can be only integer or float");
 
 	public:
+		static constexpr int32 kDimensionSize = PRIMARY_DIMENSION + AddAll< OTHER_DIMENSIONS... >::value;
+		static constexpr int32 kDimensionShape = PRIMARY_DIMENSION * MulAll< OTHER_DIMENSIONS... >::value;
+
 		typedef typename T Param;
 		typedef typename Array<Param, OTHER_DIMENSIONS...>::Type OneDimensionDownArrayT;
 		typedef OneDimensionDownArrayT Type[PRIMARY_DIMENSION];
@@ -62,29 +78,40 @@ namespace __private
 			std::random_device rd;
 			std::default_random_engine generator(rd());
 
+			Param dist[kDimensionShape];
 			if constexpr (std::is_same<float, T>::value)
 			{
 				std::uniform_real_distribution<T> uniform(-1.0f, 1.0f);
-
-				for (unsigned i = 0; i < PRIMARY_DIMENSION; ++i)
+				for (uint32 i = 0; i < kDimensionShape; ++i)
 				{
-// 					for (unsigned j = 0; j < SECONDARY_DIMENSION; ++j)
-// 					{
-// 						m_data[i][j] = uniform(generator);
-// 					}
+					dist[i] = uniform(generator);
 				}
 			}
 			else
 			{
 				std::uniform_int_distribution<T> uniform(-1, 1);
-
-				for (unsigned i = 0; i < PRIMARY_DIMENSION; ++i)
+				for (uint32 i = 0; i < kDimensionShape; ++i)
 				{
-// 					for (unsigned j = 0; j < SECONDARY_DIMENSION; ++j)
-// 					{
-// 						m_data[i][j] = uniform(generator);
-// 					}
+					dist[i] = uniform(generator);
 				}
+			}
+
+			constexpr uint32 left = kDimensionShape % SCALAR_COUNT;
+			constexpr uint32 steps = (kDimensionShape / SCALAR_COUNT) + (left != 0);
+
+			for (uint32 i = 0, j = 0; i < steps; ++i, j += SCALAR_COUNT)
+			{
+				const typename Utils::SimdHelper<T>::Type buffer = Utils::SimdHelper<T>::Load(&dist[j]);
+				SetAddress(i, buffer);
+			}
+		}
+
+		INLINE void SetAddress(const uint32 _offset, const typename Utils::SimdHelper<T>::Type& _value)
+		{
+			if (_offset < kDimensionShape)
+			{
+				ALIGNED T* ptr = GetBaseAddress();
+				Utils::SimdHelper<T>::Get(&ptr[_offset * SCALAR_COUNT], _value);
 			}
 		}
 
@@ -186,6 +213,20 @@ namespace __private
 		}
 		// END GET BASE ADDRESS FUNCTIONS
 		//
+
+		//
+		// INTERNAL HELPERS
+		template<typename ...Args>
+		constexpr INLINE int32 SumArgs(Args&&... args)
+		{
+			return (args + ... + PRIMARY_DIMENSION);
+		}
+
+		template<typename ...Args>
+		constexpr INLINE int32 MulArgs(Args&&... args)
+		{
+			return (args * ... * PRIMARY_DIMENSION);
+		}
 	};
 }
 

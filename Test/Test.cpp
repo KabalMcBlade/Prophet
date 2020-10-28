@@ -169,6 +169,11 @@ int main()
 
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
 	//////////////////////////////////////////////////////////////////////////
+
+// 	Tensor<int, 1, 2, 3> tensor1x2x3{ { { { 10, 20, 30}, { 40, 50, 60} } } };
+// 	tensor1x2x3.Clear();
+// 	tensor1x2x3.SetRandomUniformDistribution();
+// 	std::cout << tensor1x2x3 << std::endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

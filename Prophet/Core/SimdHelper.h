@@ -147,7 +147,7 @@ namespace Utils
 #else
 			if constexpr (std::is_same<int, T>::value)
 			{
-				_mm_stream_si32(_output, _value);
+				_mm_stream_si128((__m128i*) & _output[0], _value);
 			}
 			else
 			{
