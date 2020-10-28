@@ -11,14 +11,40 @@
 #include "../Core/Alignment.h"
 #include "../Core/SimdHelper.h"
 
-#include "../Tensor/Matrix.h"
 #include "../Tensor/Vector.h"
+#include "../Tensor/Matrix.h"
+#include "../Tensor/Tensor.h"
 
 
 NAMESPACE_BEGIN
 
 namespace LinearAlgebra
 {
+#pragma region Tensors
+	template <typename T, unsigned PRIMARY_DIMENSION, unsigned ... OTHER_DIMENSION>
+	static INLINE Tensor<T, PRIMARY_DIMENSION, OTHER_DIMENSION...> Multiply(const Tensor<T, PRIMARY_DIMENSION, OTHER_DIMENSION...>& _tensor, T _value)
+	{
+		constexpr uint32 left = Tensor<T, PRIMARY_DIMENSION, OTHER_DIMENSION...>::kDimensionShape % SCALAR_COUNT;
+		constexpr uint32 steps = (Tensor<T, PRIMARY_DIMENSION, OTHER_DIMENSION...>::kDimensionShape / SCALAR_COUNT) + (left != 0);
+
+		const T* addr = _tensor;
+
+		const typename Utils::SimdHelper<T>::Type mulBuffer = Utils::SimdHelper<T>::Load(_value);
+
+		Tensor<T, PRIMARY_DIMENSION, OTHER_DIMENSION...> t(_tensor);
+
+		for (uint32 i = 0, j = 0; i < steps; ++i, j += SCALAR_COUNT)
+		{
+			const typename Utils::SimdHelper<T>::Type buffer = Utils::SimdHelper<T>::Load(&addr[j]);
+			const typename Utils::SimdHelper<T>::Type result = Utils::SimdHelper<T>::Mul(buffer, mulBuffer);
+
+			t.SetAddress(i, result);
+		}
+
+		return t;
+	}
+#pragma endregion
+
 #pragma region Matrices
 	template<typename T, uint32 ROWS, uint32 COLUMNS>
 	static INLINE Matrix<T, ROWS, COLUMNS> Multiply(const Matrix<T, ROWS, COLUMNS>& _matrix, T _value)

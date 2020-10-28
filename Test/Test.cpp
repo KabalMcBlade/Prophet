@@ -170,6 +170,27 @@ int main()
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
 	//////////////////////////////////////////////////////////////////////////
 
+	//////////////////////////////////////////////////////////////////////////
+	// Test Tensor scalar product
+	Tensor<float, 1, 2, 3, 4> tensor1x2x3x4ScalarProduct;
+
+	std::cout << "6) Tensor scalar product" << std::endl << std::endl;
+	tensor1x2x3x4ScalarProduct.SetRandomUniformDistribution();
+
+	std::cout << "Rank: " << tensor1x2x3x4ScalarProduct.Rank() << std::endl << std::endl;
+	std::cout << "Original Tensor value" << std::endl << std::endl;
+	std::cout << tensor1x2x3x4ScalarProduct << std::endl;
+
+	std::cout << "Scalar value " << scalarValueMul << std::endl << std::endl;
+
+	Tensor<float, 1, 2, 3, 4> tensor1x2x3x4ScalarProductMultiplication = LinearAlgebra::Multiply(tensor1x2x3x4ScalarProduct, scalarValueMul);
+	std::cout << "Computed scalar Tensor multiplication" << std::endl << std::endl;
+	std::cout << tensor1x2x3x4ScalarProductMultiplication << std::endl;
+
+	std::cout << "---------------------------------------------" << std::endl << std::endl;
+	//////////////////////////////////////////////////////////////////////////
+
+
 // 	Tensor<int, 1, 2, 3> tensor1x2x3{ { { { 10, 20, 30}, { 40, 50, 60} } } };
 // 	tensor1x2x3.Clear();
 // 	tensor1x2x3.SetRandomUniformDistribution();

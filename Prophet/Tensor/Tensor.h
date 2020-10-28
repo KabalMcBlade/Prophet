@@ -56,7 +56,7 @@ namespace __private
 #pragma region Operators
 		INLINE const OneDimensionDownArrayT& operator[](unsigned _i) const { return m_data[_i]; }
 		INLINE OneDimensionDownArrayT& operator[](unsigned _i) { return m_data[_i]; }
-		INLINE operator Param const* () const { return GetBaseAddress(); }
+		INLINE operator Param const* () const { return GetBaseAddressConst(); }
 		INLINE operator Param* () { return GetBaseAddress(); }
 
 		INLINE friend std::ostream& operator<<(std::ostream& _os, const Array& _other)
@@ -72,7 +72,7 @@ namespace __private
 			memset(GetBaseAddress(), 0, sizeof(m_data));
 		}
 
-		INLINE void CopyFrom(Array& _other)
+		INLINE void CopyFrom(const Array& _other)
 		{
 			Utils::MemCpy(GetBaseAddress(), _other, sizeof(m_data));
 		}
@@ -119,7 +119,6 @@ namespace __private
 			}
 		}
 #pragma endregion
-
 
 	private:
 #pragma region Print methods
@@ -210,6 +209,46 @@ namespace __private
 		{
 			auto& data = _other[0];
 			return GetBaseAddress(data, _rest...);
+		}
+#pragma endregion
+
+#pragma region Get base address methods (CONST VERSION)
+		INLINE Param const* GetBaseAddressConst() const
+		{
+			return GetBaseAddressConst(m_data, PRIMARY_DIMENSION, OTHER_DIMENSIONS...);
+		}
+
+		INLINE Array::Param const* GetBaseAddressConst(const Array::Param& _value) const
+		{
+			return &_value;
+		}
+
+		template <typename BEGIN, typename... REST>
+		INLINE Array::Param const* GetBaseAddressConst(const  Array::Param* _other, const BEGIN& _begin, const REST&... _rest) const
+		{
+			const auto& data = _other[0];
+			return GetBaseAddressConst(data);
+		}
+
+		template <typename T, typename BEGIN, typename... REST>
+		INLINE Array::Param const* GetBaseAddressConst(const T& _other, const BEGIN& _begin, const REST&... _rest) const
+		{
+			const auto& data = _other[0];
+			return GetBaseAddressConst(data, _rest...);
+		}
+
+		template <typename BEGIN, typename... REST>
+		INLINE Array::Param const* GetBaseAddressConst(const OneDimensionDownArrayT& _other, const BEGIN& _begin, const REST&... _rest) const
+		{
+			const auto& data = _other[0];
+			return GetBaseAddressConst(data, _rest...);
+		}
+
+		template <typename BEGIN, typename... REST>
+		INLINE Array::Param const* GetBaseAddressConst(const Array& _other, const BEGIN& _begin, const REST&... _rest) const
+		{
+			const auto& data = _other[0];
+			return GetBaseAddressConst(data, _rest...);
 		}
 #pragma endregion
 	};
