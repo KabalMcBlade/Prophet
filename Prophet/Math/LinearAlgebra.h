@@ -120,6 +120,32 @@ namespace LinearAlgebra
 
 		return m;
 	}
+
+	template<typename T, uint32 ROWS, uint32 COLUMNS>
+	static INLINE T AccumulateDot(const Matrix<T, ROWS, COLUMNS>& _matrixA, const Matrix<T, ROWS, COLUMNS>& _matrixB)
+	{
+		AssertReturnValue((_matrixA.Rows() == _matrixB.Rows()) && (_matrixA.Columns() == _matrixB.Columns()), 0, "Matrices must share the same number of rows and columns");
+
+		constexpr uint32 left = (ROWS * COLUMNS) % SCALAR_COUNT;
+		constexpr uint32 steps = ((ROWS * COLUMNS) / SCALAR_COUNT) + (left != 0);
+
+		const T* addrA = _matrixA;
+		const T* addrB = _matrixB;
+
+		T result = 0;
+
+		for (uint32 i = 0, j = 0; i < steps; ++i, j += SCALAR_COUNT)
+		{
+			const typename Utils::SimdHelper<T>::Type bufferA = Utils::SimdHelper<T>::Load(&addrA[j]);
+			const typename Utils::SimdHelper<T>::Type bufferB = Utils::SimdHelper<T>::Load(&addrB[j]);
+
+			const typename Utils::SimdHelper<T>::Type dot = Utils::SimdHelper<T>::Dot(bufferA, bufferB);
+
+			result += Utils::SimdHelper<T>::ExtractX(dot);
+		}
+
+		return result;
+	}
 #pragma endregion
 	
 #pragma region Vectors

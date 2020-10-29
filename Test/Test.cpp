@@ -189,7 +189,14 @@ int main()
 
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
 	//////////////////////////////////////////////////////////////////////////
-
+	
+	/*
+	__m128 a = _mm_set_ps(4.0f, 3.0f, 2.0f, 1.0f);
+	__m128 a_res = Utils::SimdHelper<float>::Shuffle<_MM_SHUFFLE(Utils::ESwizzle::X, Utils::ESwizzle::Y, Utils::ESwizzle::Z, Utils::ESwizzle::W)>(a);
+	
+	__m128i b = _mm_set_epi32(4, 3, 2, 1);
+	__m128i b_res = Utils::SimdHelper<int>::Shuffle<_MM_SHUFFLE(Utils::ESwizzle::X, Utils::ESwizzle::Y, Utils::ESwizzle::Z, Utils::ESwizzle::W)>(b);
+	*/
 
 // 	Tensor<int, 1, 2, 3> tensor1x2x3{ { { { 10, 20, 30}, { 40, 50, 60} } } };
 // 	tensor1x2x3.Clear();

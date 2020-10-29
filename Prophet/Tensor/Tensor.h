@@ -121,6 +121,11 @@ namespace __private
 #pragma endregion
 
 	private:
+#pragma region Private members
+		mutable Param const* m_baseAddressConst = nullptr;
+		Param* m_baseAddress = nullptr;
+#pragma endregion
+
 #pragma region Print methods
 		static INLINE void Print(std::ostream& _os, const Array::Param& _value)
 		{
@@ -175,7 +180,15 @@ namespace __private
 #pragma region Get base address methods
 		INLINE Param* GetBaseAddress()
 		{
-			return GetBaseAddress(m_data, PRIMARY_DIMENSION, OTHER_DIMENSIONS...);
+			if (m_baseAddress)
+			{
+				return m_baseAddress;
+			}
+			else
+			{
+				m_baseAddress = GetBaseAddress(m_data, PRIMARY_DIMENSION, OTHER_DIMENSIONS...);
+				return m_baseAddress;
+			}
 		}
 
 		INLINE Array::Param* GetBaseAddress(Array::Param& _value)
@@ -215,7 +228,15 @@ namespace __private
 #pragma region Get base address methods (CONST VERSION)
 		INLINE Param const* GetBaseAddressConst() const
 		{
-			return GetBaseAddressConst(m_data, PRIMARY_DIMENSION, OTHER_DIMENSIONS...);
+			if (m_baseAddressConst)
+			{
+				return m_baseAddressConst;
+			}
+			else
+			{
+				m_baseAddressConst = GetBaseAddressConst(m_data, PRIMARY_DIMENSION, OTHER_DIMENSIONS...);
+				return m_baseAddressConst;
+			}
 		}
 
 		INLINE Array::Param const* GetBaseAddressConst(const Array::Param& _value) const

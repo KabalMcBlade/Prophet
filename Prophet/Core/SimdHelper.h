@@ -8,8 +8,19 @@
 
 NAMESPACE_BEGIN
 
+
+
+
 namespace Utils
 {
+	enum ESwizzle : uint32
+	{
+		X = 0,
+		Y = 1,
+		Z = 2,
+		W = 3
+	};
+
 	template<typename T>
 	class SimdHelper
 	{
@@ -23,9 +34,71 @@ namespace Utils
 		>::type;
 
 	public:
+
+#pragma region SWIZZLE METHOD
+		template<unsigned MASK>
+		static INLINE Type Shuffle(Type _value)
+		{
+#if (ARCH & ARCH_AVX512_FLAG)
+			if constexpr (std::is_same<int, T>::value)
+			{
+				return _mm512_shuffle_epi32(_value, _mask);
+			}
+			else
+			{
+				return _mm512_shuffle_ps(_value, _mask);
+			}
+#elif ARCH & ARCH_AVX2_FLAG
+			if constexpr (std::is_same<int, T>::value)
+			{
+				return _mm256_shuffle_epi32(_value, _mask);
+			}
+			else
+			{
+				return _mm256_shuffle_ps(_value, _mask);
+			}
+#elif ARCH & ARCH_AVX_FLAG
+			if constexpr (std::is_same<int, T>::value)
+			{
+				const __m256 lhv = _mm256_castsi256_ps(_value);
+				const __m256 rhv = _mm256_castsi256_ps(_value);
+				const __m256 shf = _mm256_shuffle_ps(lhv, rhv, MASK);
+				return  _mm256_castps_si256(shf);
+			}
+			else
+			{
+				return _mm256_shuffle_ps(_value, _mask);
+			}
+#else
+			if constexpr (std::is_same<int, T>::value)
+			{
+				const __m128 lhv = _mm_castsi128_ps(_value);
+				const __m128 rhv = _mm_castsi128_ps(_value);
+				const __m128 shf = _mm_shuffle_ps(lhv, rhv, MASK);
+				return  _mm_castps_si128(shf);
+			}
+			else
+			{
+				return _mm_shuffle_ps(_value, _value, MASK);
+			}
+#endif
+		}
+
+		template<ESwizzle _X, ESwizzle _Y, ESwizzle _Z, ESwizzle _W>
+		static constexpr INLINE Type Swizzle(Type _v)
+		{
+			static_assert(_X <= 3, "X parameter out of range (0 to 3)");
+			static_assert(_Y <= 3, "Y parameter out of range (0 to 3)");
+			static_assert(_Z <= 3, "Z parameter out of range (0 to 3)");
+			static_assert(_W <= 3, "W parameter out of range (0 to 3)");
+
+			return Shuffle<_MM_SHUFFLE(_W, _Z, _Y, _X)>(_v);
+		}
+#pragma endregion
+
 		static INLINE Type Zero()
 		{
-#if ARCH & ARCH_AVX512_FLAG
+#if (ARCH & ARCH_AVX512_FLAG)
 			if constexpr (std::is_same<int, T>::value)
 			{
 				return _mm512_setzero_si512();
@@ -60,7 +133,7 @@ namespace Utils
 		{
 			static_assert(_INDEX <= SCALAR_COUNT, "Index out of range");
 
-#if ARCH & ARCH_AVX512_FLAG
+#if (ARCH & ARCH_AVX512_FLAG)
 			if constexpr (std::is_same<int, T>::value)
 			{
 				return _mm512_cvtsi512_si32(_mm512_alignr_epi32(_value, _value, _INDEX));
@@ -93,7 +166,7 @@ namespace Utils
 		template<>
 		static INLINE T GetValueByIndex<0>(Type _value)
 		{
-#if ARCH & ARCH_AVX512_FLAG
+#if (ARCH & ARCH_AVX512_FLAG)
 			if constexpr (std::is_same<int, T>::value)
 			{
 				return _mm512_cvtsi512_si32(_value);
@@ -126,7 +199,7 @@ namespace Utils
 
 		static INLINE void Get(T* _output, Type _value)
 		{
-#if ARCH & ARCH_AVX512_FLAG
+#if (ARCH & ARCH_AVX512_FLAG)
 			if constexpr (std::is_same<int, T>::value)
 			{
 				_mm512_stream_si512(_output, _value);
@@ -160,7 +233,7 @@ namespace Utils
 
 		static INLINE Type Load(T const* _addr)
 		{
-#if ARCH & ARCH_AVX512_FLAG
+#if (ARCH & ARCH_AVX512_FLAG)
 			if constexpr (std::is_same<int, T>::value)
 			{
 				return _mm512_load_si512((__m512i const*)(&(_addr[0])));
@@ -192,7 +265,7 @@ namespace Utils
 
 		static INLINE Type Load(T _value)
 		{
-#if ARCH & ARCH_AVX512_FLAG
+#if (ARCH & ARCH_AVX512_FLAG)
 			if constexpr (std::is_same<int, T>::value)
 			{
 				return _mm512_set1_epi32(_value);
@@ -224,7 +297,7 @@ namespace Utils
 
 		static INLINE Type Mul(Type _a, Type _b)
 		{
-#if ARCH & ARCH_AVX512_FLAG
+#if (ARCH & ARCH_AVX512_FLAG)
 			if constexpr (std::is_same<int, T>::value)
 			{
 				return _mm512_mullo_epi32(_a, _b);
@@ -254,7 +327,76 @@ namespace Utils
 #endif
 		}
 
+		static INLINE Type Dot(Type _a, Type _b)
+		{
+#if (ARCH & ARCH_AVX512_FLAG)
+			if constexpr (std::is_same<int, T>::value)
+			{
+				return _mm512_dot_pi(_a, _b);
+			}
+			else
+			{
+				return _mm512_dot_ps(_a, _b);
+			}
+#elif (ARCH & ARCH_AVX_FLAG)
+			if constexpr (std::is_same<int, T>::value)
+			{
+				return _mm256_dot_pi(_a, _b);
+			}
+			else
+			{
+				return _mm256_dot_ps(_a, _b);
+			}
+#else
+			if constexpr (std::is_same<int, T>::value)
+			{
+				return _mm_dot_pi(_a, _b);
+			}
+			else
+			{
+				return _mm_dot_ps(_a, _b);
+			}
+#endif
+		}
+
+
+		static INLINE T ExtractX(Type _value)
+		{
+#if (ARCH & ARCH_AVX512_FLAG)
+			if constexpr (std::is_same<int, T>::value)
+			{
+				return _mm512_cvtsi512_si32(_value);
+			}
+			else
+			{
+				return _mm512_cvtss_f32(_value);
+			}
+#elif (ARCH & ARCH_AVX_FLAG)
+			if constexpr (std::is_same<int, T>::value)
+			{
+				return _mm256_cvtsi256_si32(_value);
+			}
+			else
+			{
+				return _mm256_cvtss_f32(_value);
+			}
+#else
+			
+			if constexpr (std::is_same<int, T>::value)
+			{
+				return _mm_cvtss_si32(_value);
+			}
+			else
+			{
+				return _mm_cvtss_f32(_value);
+			}
+#endif
+		}
+
 	private:
+#pragma region Helper methods
+
+#pragma endregion 
 		static INLINE __m128i _mm_mul_pi(const __m128i& _a, const __m128i& _b)
 		{
 #if ARCH & ARCH_SSE41_FLAG
@@ -351,6 +493,76 @@ namespace Utils
 		}
 #endif
 
+#pragma region Dot Product Methods
+
+#if (ARCH & ARCH_AVX512_FLAG)
+		static INLINE __m512i _mm512_dot_pi(const __m128i _a, const __m128i _b)
+		{
+			const __m512i mul = _mm512_mullo_epi32(_a, _b);
+			const __m512i add = _mm512_add_epi32(mul, Swizzle<Y, X, W, Z>(mul));
+			const __m512i res = _mm512_add_epi32(add, Swizzle<W, Z, Y, X>(add));
+			return res;
+		}
+
+		static INLINE __m512 _mm512_dot_ps(const __m128 _a, const __m128 _b)
+		{
+			const __m128 mul = _mm512_mul_ps(_a, _b);
+			const __m128 add = _mm512_add_ps(mul, Swizzle<Y, X, W, Z>(mul));
+			const __m128 res = _mm512_add_ps(add, Swizzle<W, Z, Y, X>(add));
+			return res;
+		}
+#endif
+
+#if (ARCH & ARCH_AVX_FLAG)
+		static INLINE __m256i _mm256_dot_pi(const __m128i _a, const __m128i _b)
+		{
+			const __m256i mul = _mm256_mullo_epi32(_a, _b);
+			const __m256i add = _mm256_add_epi32(mul, Swizzle<Y, X, W, Z>(mul));
+			const __m256i res = _mm256_add_epi32(add, Swizzle<W, Z, Y, X>(add));
+			return res;
+		}
+
+		static INLINE __m256 _mm256_dot_ps(const __m128 _a, const __m128 _b)
+		{
+			const __m128 mul = _mm256_mul_ps(_a, _b);
+			const __m128 add = _mm256_add_ps(mul, Swizzle<Y, X, W, Z>(mul));
+			const __m128 res = _mm256_add_ps(add, Swizzle<W, Z, Y, X>(add));
+			return res;
+		}
+#endif
+
+		static INLINE __m128i _mm_dot_pi(const __m128i _a, const __m128i _b)
+		{
+#if ARCH & ARCH_SSE3_FLAG
+			const __m128i mul = _mm_mul_pi(_a, _b);
+			const __m128i add = _mm_hadd_epi32(mul, mul);
+			const __m128i res = _mm_hadd_epi32(add, add);
+			return res;
+#else
+			const __m128i mul = _mm_mul_pi(_a, _b);
+			const __m128i add = _mm_add_pi32(mul, Swizzle<Y, X, W, Z>(mul));
+			const __m128i res = _mm_add_pi32(add, Swizzle<W, Z, Y, X>(add));
+			return res;
+#endif
+		}
+
+		static INLINE __m128 _mm_dot_ps(const __m128 _a, const __m128 _b)
+		{
+#if ARCH & ARCH_SSE41_FLAG
+			return _mm_dp_ps(_a, _b, 0xff); // 1111 1111 -> all values are computed and the result is saved to the whole register
+#elif ARCH & ARCH_SSE3_FLAG
+			const __m128 mul = _mm_mul_ps(_a, _b);
+			const __m128 add = _mm_hadd_ps(mul, mul);
+			const __m128 res = _mm_hadd_ps(add, add);
+			return res;
+#else
+			const __m128 mul = _mm_mul_ps(_a, _b);
+			const __m128 add = _mm_add_ps(mul, Swizzle<Y, X, W, Z>(mul));
+			const __m128 res = _mm_add_ps(add, Swizzle<W, Z, Y, X>(add));
+			return res;
+#endif
+		}
+#pragma endregion
 	};
 }
 
